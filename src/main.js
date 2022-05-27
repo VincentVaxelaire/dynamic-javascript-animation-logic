@@ -12,6 +12,9 @@ canvas.style.width = `${sizes.WIDTH}px`;
 canvas.style.height = `${sizes.HEIGHT}px`;
 const ctx = canvas.getContext("2d");
 
+let angle1 = 0;
+let angle2 = 0;
+
 const frame = (ts) => {
   ts /= 1000;
 
@@ -19,27 +22,16 @@ const frame = (ts) => {
 
   const circleX = sizes.WIDTH / 2;
   const circleY = sizes.HEIGHT / 2;
+  const circleRadius = 100;
 
-  const circleRadius = 200;
-  const circleStartAngle = 0;
-  const circleEndAngle = Math.PI * 2;
-  const circleCounterClockwise = false;
-
-  ctx.strokeStyle = "black";
+  ctx.fillStyle = "black";
   ctx.beginPath();
-  ctx.arc( circleX, circleY, circleRadius, circleStartAngle, circleEndAngle, circleCounterClockwise );
-  ctx.stroke();
-
-
-  ctx.fillStyle = "red";
-  const angle = ts * 2;
-
-  const moveX = circleX + circleRadius * Math.cos(angle);
-  const moveY = circleY + circleRadius * Math.sin(angle);
-
-  ctx.beginPath();
-  ctx.arc( moveX, moveY, 20, circleStartAngle, circleEndAngle, circleCounterClockwise );
+  // create wave movement
+  ctx.arc(circleX + Math.sin(angle1) * 1000, circleY + Math.cos(angle2) * 50, circleRadius, 0, Math.PI * 2);
   ctx.fill();
+
+  angle1 += 0.01;
+  angle2 += 0.04;
 
   requestAnimationFrame(frame);
 }; frame()
