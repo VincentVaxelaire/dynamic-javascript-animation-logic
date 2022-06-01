@@ -13,13 +13,12 @@ canvas.height = sizes.HEIGHT * devicePixelRatio;
 canvas.style.width = `${sizes.WIDTH}px`;
 canvas.style.height = `${sizes.HEIGHT}px`;
 
-let posX = 0
-let posY = 0
+let posX = canvas.width / 2
+let posY = canvas.height / 2
 
 let oldTime = 0
 
-// const velocityX = Math.random() * 2 - 1;
-// const velocityY = Math.random() * 2 - 1;
+const randomAngle = Math.random() * (Math.PI * 2)
 
 const frame = (ts) => {
   ts /= 1000
@@ -28,8 +27,13 @@ const frame = (ts) => {
 
   ctx.clearRect(0, 0, canvas.width, canvas.height)
 
-  posX += dt * 100
-  posY += dt * 50
+  const speed = dt * 50
+
+  const velocityX = Math.cos(randomAngle) * speed
+  const velocityY = Math.sin(randomAngle) * speed
+
+  posX += velocityX
+  posY += velocityY
 
   ctx.fillRect(posX, posY, 40, 40)
 
