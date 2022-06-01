@@ -8,34 +8,70 @@ const sizes = {
   HEIGHT: window.innerHeight,
 }
 
+// determine mouse position
+const mousePosition = {
+  x: 0,
+  y: 0,
+}
+
+let arrowX = canvas.width/2;
+let arrowY = canvas.height/2;
+
+canvas.addEventListener("mousemove", (event) => {
+  const mouseX = event.layerX;
+  const mouseY = event.layerY;
+  mousePosition.x = mouseX;
+  mousePosition.y = mouseY;
+})
+
 canvas.width = sizes.WIDTH * devicePixelRatio;
 canvas.height = sizes.HEIGHT * devicePixelRatio;
 canvas.style.width = `${sizes.WIDTH}px`;
 canvas.style.height = `${sizes.HEIGHT}px`;
 
-let posX = canvas.width / 2
-let posY = canvas.height / 2
-
-let oldTime = 0
-
-const randomAngle = Math.random() * (Math.PI * 2)
-
 const frame = (ts) => {
-  ts /= 1000
-  const dt = ts - oldTime
-  oldTime = ts
+  ts /= 1000;
 
-  ctx.clearRect(0, 0, canvas.width, canvas.height)
+  ctx.clearRect(0, 0, sizes.WIDTH, sizes.HEIGHT);
 
-  const speed = dt * 50
+  const arrowWidth = 100;
+  
+  ctx.fillStyle = "red";
+  ctx.strokeStyle = "blue";
+  ctx.lineWidth = 2;
 
-  const velocityX = Math.cos(randomAngle) * speed
-  const velocityY = Math.sin(randomAngle) * speed
+  const dx = mousePosition.x - arrowX;
+  const dy = mousePosition.y - arrowY;
+  const angle = Math.atan2(dy, dx);
 
-  posX += velocityX
-  posY += velocityY
+  const speed = 3;
+  const velocityX = Math.cos(angle) * speed;
+  const velocityY = Math.sin(angle) * speed;
 
-  ctx.fillRect(posX, posY, 40, 40)
+  arrowX += velocityX;
+  arrowY += velocityY;
+
+  ctx.save();
+    ctx.translate(arrowX, arrowY);
+
+    // control animation with mouse
+    ctx.rotate(angle);
+    // // linear animation
+    // ctx.rotate(ts);  
+
+    ctx.beginPath();
+    ctx.moveTo(0, 0);
+    ctx.lineTo(0, -10);
+    ctx.lineTo(0 + arrowWidth / 2, -10);
+    ctx.lineTo(0 + arrowWidth / 2, -20);
+    ctx.lineTo(0 + arrowWidth, 0);
+    ctx.lineTo(0 + arrowWidth / 2, 20);
+    ctx.lineTo(0 + arrowWidth / 2, 10);
+    ctx.lineTo(0, 10);
+    ctx.closePath();
+    ctx.fill();
+    ctx.stroke();
+  ctx.restore();
 
   requestAnimationFrame(frame);
 }; frame()
