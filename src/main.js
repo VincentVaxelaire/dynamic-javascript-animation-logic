@@ -8,70 +8,36 @@ const sizes = {
   HEIGHT: window.innerHeight,
 }
 
-// determine mouse position
-const mousePosition = {
-  x: 0,
-  y: 0,
-}
-
-let arrowX = canvas.width/2;
-let arrowY = canvas.height/2;
-
-canvas.addEventListener("mousemove", (event) => {
-  const mouseX = event.layerX;
-  const mouseY = event.layerY;
-  mousePosition.x = mouseX;
-  mousePosition.y = mouseY;
-})
-
 canvas.width = sizes.WIDTH * devicePixelRatio;
 canvas.height = sizes.HEIGHT * devicePixelRatio;
 canvas.style.width = `${sizes.WIDTH}px`;
 canvas.style.height = `${sizes.HEIGHT}px`;
 
+let currentTime = 0;
+
+let positionX = 100;
+let positionY = 100;
+
+let velocityX = 0;
+let velocityY = 0;
+
+let accelerationX = 0.05;
+let accelerationY = 0.05;
+
 const frame = (ts) => {
   ts /= 1000;
+  const deltaTime = ts - currentTime;
+  currentTime = ts;
 
   ctx.clearRect(0, 0, sizes.WIDTH, sizes.HEIGHT);
 
-  const arrowWidth = 100;
-  
-  ctx.fillStyle = "red";
-  ctx.strokeStyle = "blue";
-  ctx.lineWidth = 2;
+  velocityX += accelerationX * deltaTime;
+  velocityY += accelerationY * deltaTime;
 
-  const dx = mousePosition.x - arrowX;
-  const dy = mousePosition.y - arrowY;
-  const angle = Math.atan2(dy, dx);
+  positionX += velocityX;
+  positionY += velocityY;
 
-  const speed = 3;
-  const velocityX = Math.cos(angle) * speed;
-  const velocityY = Math.sin(angle) * speed;
-
-  arrowX += velocityX;
-  arrowY += velocityY;
-
-  ctx.save();
-    ctx.translate(arrowX, arrowY);
-
-    // control animation with mouse
-    ctx.rotate(angle);
-    // // linear animation
-    // ctx.rotate(ts);  
-
-    ctx.beginPath();
-    ctx.moveTo(0, 0);
-    ctx.lineTo(0, -10);
-    ctx.lineTo(0 + arrowWidth / 2, -10);
-    ctx.lineTo(0 + arrowWidth / 2, -20);
-    ctx.lineTo(0 + arrowWidth, 0);
-    ctx.lineTo(0 + arrowWidth / 2, 20);
-    ctx.lineTo(0 + arrowWidth / 2, 10);
-    ctx.lineTo(0, 10);
-    ctx.closePath();
-    ctx.fill();
-    ctx.stroke();
-  ctx.restore();
+  ctx.fillRect(positionX, positionY, 20, 20);
 
   requestAnimationFrame(frame);
 }; frame()
